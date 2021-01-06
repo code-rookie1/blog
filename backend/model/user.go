@@ -15,6 +15,6 @@ type User struct {
 	Email     string      `json:"email" gorm:"comment:邮箱"`
 	Phone     string      `json:"phone" gorm:"comment:电话"`
 	Region    string      `json:"region" gorm:"default:成都;comment:地区"`
-	Age       uint         `json:"age" gorm:"default:18;comment:年龄"`
-	Signature string      `json:"signature" gorm:"type:text;default:这个人很懒，什么页没留下;comment:签名"`
+	Age       uint        `json:"age" gorm:"default:18;comment:年龄"`
+	Signature string      `json:"signature" gorm:"type:text;comment:签名"`
 }
