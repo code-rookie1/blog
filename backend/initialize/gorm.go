@@ -56,9 +56,6 @@ func GormMysql() *gorm.DB {
 }
 
 
-
-
-
 // gormConfig 根据配置决定是否开启日志
 func gormConfig(mod bool) *gorm.Config {
 	if mod {
