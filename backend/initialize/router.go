@@ -14,7 +14,8 @@ func Routers() *gin.Engine {
 	//Router.Use()
 	ApiGroup := Router.Group("")
 	//下面是注册路由的
-	router.InitUserRouter(ApiGroup)   //注册用户路由
+	router.InitUserRouter(ApiGroup)  //注册用户路由
+	router.InitLabelRouter(ApiGroup) //注册标签路由
 
 	fmt.Println("路由注册成功！")
 	return Router
