@@ -10,36 +10,36 @@ import (
 )
 
 // 用户注册
-func Register(user model.User) (err error, userInter model.User) {
-	var UserStruct model.User
-	if !errors.Is(global.GVB_DB.Where("username = ? ", user.Username).First(&UserStruct).Error, gorm.ErrRecordNotFound) {
-		return errors.New("用户名已经注册"), userInter
+func Register(user model.User) (err error) {
+	var userStruct model.User
+	if !errors.Is(global.GVB_DB.Where("username = ? ", user.Username).First(&userStruct).Error, gorm.ErrRecordNotFound) {
+		return errors.New("用户名已经注册")
 	}
 	//否则 附加uuid 密码MD5简单加密  注册
 	user.UUID = uuid.NewV4()
 	err = global.GVB_DB.Create(&user).Error
-	return err, userInter
+	return err
 }
 
 // 登录
-func Login(user *model.User) (err error, userInter *model.User) {
-	var UserStruct model.User
-	err = global.GVB_DB.Where("username = ? AND password = ?", user.Username, user.Password).First(&UserStruct).Error
-	return err, &UserStruct
+func Login(user *model.User) (err error, userBack *model.User) {
+	var userStruct model.User
+	err = global.GVB_DB.Where("username = ? AND password = ?", user.Username, user.Password).First(&userStruct).Error
+	return err, &userStruct
 }
 
 // 修改个人信息
-func SetUserInfo(user model.User) (err error, userInter model.User) {
-	var UserStruct model.User
-	err = global.GVB_DB.Where("username = ? AND password = ?", user.Username, user.Password).First(&UserStruct).Updates(&user).Error
-	return err, userInter
+func SetUserInfo(user model.User) (err error, userBack *model.User) {
+	var userStruct model.User
+	err = global.GVB_DB.Where("username = ? AND password = ?", user.Username, user.Password).First(&userStruct).Updates(&user).Error
+	return err, userBack
 }
 
 //修改密码
-func ChangePassword(user *model.User, newPassword string) (err error, userInter *model.User) {
+func ChangePassword(user *model.User, newPassword string) (err error, userBack *model.User) {
 	var userStruct model.User
 	err = global.GVB_DB.Where("username = ? AND password = ?", user.Username, user.Password).First(&userStruct).Update("password", newPassword).Error
-	return err, userInter
+	return err, &userStruct
 }
 
 // 获取用户列表

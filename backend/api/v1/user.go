@@ -21,11 +21,11 @@ func Register(c *gin.Context) {
 		return
 	}
 	user := &model.User{Username: RegisterStruct.Username, Nickname: RegisterStruct.NickName, Password: RegisterStruct.Password, Avatar: RegisterStruct.HeaderImg}
-	err, userReturn := service.Register(*user)
+	err := service.Register(*user)
 	if err != nil {
-		response.FailWithDetailed(response.ERROR, resp.User{User: userReturn}, fmt.Sprintf("%v", err), c)
+		response.FailWithMessage(fmt.Sprintf("注册失败%v", err), c)
 	} else {
-		response.OkWithDetailed(resp.User{User: userReturn}, "注册成功", c)
+		response.OkWithMessage("注册成功", c)
 	}
 }
 
@@ -33,11 +33,16 @@ func Register(c *gin.Context) {
 func Login(c *gin.Context) {
 	var LoginStruct request.LoginStruct
 	_ = c.ShouldBindJSON(&LoginStruct)
+	msg, code := utils.Validate(&LoginStruct)
+	if code == response.ERROR {
+		response.FailWithMessage(msg, c)
+		return
+	}
 	user := &model.User{Username: LoginStruct.Username, Password: LoginStruct.Password}
-	if err, userInter := service.Login(user); err != nil {
+	if err, userBack := service.Login(user); err != nil {
 		response.FailWithMessage(fmt.Sprintf("登录失败,%v", err), c)
 	} else {
-		response.OkWithDetailed(userInter, "登录成功", c)
+		response.OkWithDetailed(userBack, "登录成功", c)
 		//后续增加jwt
 	}
 }
@@ -46,12 +51,12 @@ func Login(c *gin.Context) {
 func SetUserInfo(c *gin.Context) {
 	var user model.User
 	_ = c.ShouldBindJSON(&user)
-	err, userInter := service.SetUserInfo(user)
+	err, userBack := service.SetUserInfo(user)
 	if err != nil {
 		fmt.Println("更新失败", err)
 		response.FailWithMessage(fmt.Sprintf("更新失败,%v", err), c)
 	} else {
-		response.OkWithDetailed(userInter, "更新成功", c)
+		response.OkWithDetailed(userBack, "更新成功", c)
 	}
 }
 

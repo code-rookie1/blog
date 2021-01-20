@@ -21,15 +21,15 @@ func AddLabel(c *gin.Context) {
 		return
 	}
 	label := &model.Label{Name: labelStruct.Name, Alias: labelStruct.Alias, Description: labelStruct.Description}
-	err, labelBack := service.AddLabel(label)
+	err := service.AddLabel(label)
 	if err != nil {
-		response.FailWithDetailed(response.ERROR, resp.Label{Label: labelBack}, fmt.Sprintf("%v", err), c)
+		response.FailWithMessage(fmt.Sprintf("添加失败%v", err), c)
 	} else {
-		response.OkWithDetailed(resp.Label{Label: labelBack}, "添加成功", c)
+		response.OkWithMessage("添加成功", c)
 	}
 }
 
-//修改个人信息
+//修改标签信息
 func UpdateLabel(c *gin.Context) {
 	var labelStruct model.Label
 	_ = c.ShouldBindJSON(&labelStruct)

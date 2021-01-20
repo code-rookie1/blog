@@ -9,20 +9,20 @@ import (
 )
 
 // 增加标签
-func AddLabel(label *model.Label) (err error, labelBack model.Label) {
+func AddLabel(label *model.Label) (err error) {
 	var labelStruct model.Label
 	if !errors.Is(global.GVB_DB.Where("name = ? ", label.Name).First(&labelStruct).Error, gorm.ErrRecordNotFound) {
-		return errors.New("标签名字重复"), labelBack
+		return errors.New("标签名字重复")
 	}
 	err = global.GVB_DB.Create(&label).Error
-	return err, labelBack
+	return err
 }
 
 // 修改标签
-func UpdateLabel(label model.Label) (err error, labelBack model.Label) {
+func UpdateLabel(label model.Label) (err error, labelBack *model.Label) {
 	var labelStruct model.Label
 	err = global.GVB_DB.Where("name = ?", label.Name).First(&labelStruct).Updates(&label).Error
-	return err, labelBack
+	return err, &labelStruct
 }
 
 // 获取标签列表
