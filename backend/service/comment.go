@@ -39,6 +39,6 @@ func GetCommentList(info request.PageInfo) (err error, list interface{}, total i
 // 通过id获取评论
 func GetCommentById(id int) (err error, commentBack *model.Comment) {
 	var commentStruct model.Comment
-	err = global.GVB_DB.Where("id = ?", id).First(&commentStruct).Error
+	err = global.GVB_DB.Where("id = ?", id).Preload("User").Preload("Article").Preload("Reply").First(&commentStruct).Error
 	return err, &commentStruct
 }

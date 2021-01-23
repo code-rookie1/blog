@@ -39,6 +39,6 @@ func GetArticleList(info request.PageInfo) (err error, list interface{}, total i
 // 通过id获取文章
 func GetArticleById(id int) (err error, articleBack *model.Article) {
 	var articleStruct model.Article
-	err = global.GVB_DB.Where("id = ?", id).First(&articleStruct).Error
+	err = global.GVB_DB.Where("id = ?", id).Preload("LabelID").First(&articleStruct).Error
 	return err, &articleStruct
 }

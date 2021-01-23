@@ -39,6 +39,6 @@ func GetLabelList(info request.PageInfo) (err error, list interface{}, total int
 // 通过id获取标签
 func GetLabelById(id int) (err error, labelBack *model.Label) {
 	var labelStruct model.Label
-	err = global.GVB_DB.Where("id = ?", id).First(&labelStruct).Error
+	err = global.GVB_DB.Where("id = ?", id).Preload("Article").First(&labelStruct).Error
 	return err, &labelStruct
 }

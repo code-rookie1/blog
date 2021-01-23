@@ -21,7 +21,7 @@ func AddCategory(category *model.Category) (err error) {
 // 修改类别
 func UpdateCategory(category model.Category) (err error, categoryBack *model.Category) {
 	var categoryStruct model.Category
-	err = global.GVB_DB.Where("name = ?", category.Name).First(&categoryStruct).Updates(&category).Error
+	err = global.GVB_DB.Where("id = ?", category.ID).First(&categoryStruct).Updates(&category).Error
 	return err, &categoryStruct
 }
 
@@ -39,6 +39,6 @@ func GetCategoryList(info request.PageInfo) (err error, list interface{}, total 
 // 通过id获取类别
 func GetCategoryById(id int) (err error, categoryBack *model.Category) {
 	var categoryStruct model.Category
-	err = global.GVB_DB.Where("id = ?", id).First(&categoryStruct).Error
+	err = global.GVB_DB.Where("id = ?", id).Preload("Article").Preload("SubCategory").First(&categoryStruct).Error
 	return err, &categoryStruct
 }

@@ -1,14 +1,18 @@
 package v1
 
 import (
+	"blog/global"
 	"blog/global/response"
+	"blog/middleware"
 	"blog/model"
 	"blog/model/request"
 	resp "blog/model/response"
 	"blog/service"
 	"blog/utils"
 	"fmt"
+	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
+	"time"
 )
 
 //注册
@@ -42,9 +46,39 @@ func Login(c *gin.Context) {
 	if err, userBack := service.Login(user); err != nil {
 		response.FailWithMessage("用户名或密码错误", c)
 	} else {
-		response.OkWithDetailed(userBack, "登录成功", c)
+		tokenNext(c, *userBack)
+		//response.OkWithDetailed(userBack, "登录成功", c)
 		//后续增加jwt
 	}
+}
+
+//登录后签发token
+func tokenNext(c *gin.Context, user model.User) {
+	j := &middleware.JWT{SigningKey: []byte(global.GVB_CONFIG.JWT.SigningKey)} // 唯一签名
+	claims := request.CustomClaims{
+		UUID:       user.UUID,
+		ID:         user.ID,
+		NickName:   user.Nickname,
+		Username:   user.Username,
+		BufferTime: global.GVB_CONFIG.JWT.BufferTime, // 缓冲时间1天 缓冲时间内会获得新的token刷新令牌 此时一个用户会存在两个有效令牌 但是前端只留一个 另一个会丢失
+		StandardClaims: jwt.StandardClaims{
+			NotBefore: time.Now().Unix() - 1000,                              // 签名生效时间
+			ExpiresAt: time.Now().Unix() + global.GVB_CONFIG.JWT.ExpiresTime, // 过期时间 7天  配置文件
+			Issuer:    "UltraMan",                                            // 签名的发行者
+		},
+	}
+	token, err := j.CreateToken(claims)
+	if err != nil {
+		response.FailWithMessage("获取token失败", c)
+		return
+	} else {
+		response.OkWithDetailed(resp.LoginResponse{
+			User:      user,
+			Token:     token,
+			ExpiresAt: claims.StandardClaims.ExpiresAt * 1000,
+		}, "登录成功", c)
+	}
+
 }
 
 //修改个人信息
