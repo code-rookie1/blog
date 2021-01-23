@@ -32,7 +32,7 @@ func Login(user *model.User) (err error, userBack *model.User) {
 func SetUserInfo(user model.User) (err error, userBack *model.User) {
 	var userStruct model.User
 	err = global.GVB_DB.Where("username = ? AND password = ?", user.Username, user.Password).First(&userStruct).Updates(&user).Error
-	return err, userBack
+	return err, &userStruct
 }
 
 //修改密码

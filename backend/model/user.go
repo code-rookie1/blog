@@ -7,14 +7,14 @@ import (
 
 type User struct {
 	gorm.Model
-	UUID      uuid.UUID   `json:"uuid" gorm:"comment:用户UUID"`
-	Username  string      `json:"username" gorm:"comment:用户登录名"`
-	Password  string      `json:"password" gorm:"comment:密码"`
-	Nickname  string      `json:"nickname" gorm:"default:小蒋;comment:拥挤昵称"`
-	Avatar    string      `json:"avatar" gorm:"default:http://qmplusimg.henrongyi.top/head.png;comment:用户头像"`
-	Email     string      `json:"email" gorm:"comment:邮箱"`
-	Phone     string      `json:"phone" gorm:"comment:电话"`
-	Region    string      `json:"region" gorm:"default:成都;comment:地区"`
-	Age       uint        `json:"age" gorm:"default:18;comment:年龄"`
-	Signature string      `json:"signature" gorm:"type:text;comment:签名"`
+	UUID      uuid.UUID `json:"uuid" gorm:"comment:用户UUID"`
+	Username  string    `json:"username" gorm:"comment:用户登录名"`
+	Password  string    `json:"password" gorm:"comment:密码"`
+	Nickname  string    `json:"nickname" gorm:"default:小蒋;comment:拥挤昵称"`
+	Avatar    string    `json:"avatar" gorm:"default:http://qmplusimg.henrongyi.top/head.png;comment:用户头像"`
+	Email     string    `json:"email" gorm:"comment:邮箱" validate:"omitempty,email"`
+	Phone     string    `json:"phone" gorm:"comment:电话" validate:"omitempty,len=11"`
+	Region    string    `json:"region" gorm:"default:成都;comment:地区"`
+	Age       uint      `json:"age" gorm:"default:18;comment:年龄"`
+	Signature string    `json:"signature" gorm:"type:text;comment:签名"`
 }

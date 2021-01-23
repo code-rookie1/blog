@@ -23,7 +23,7 @@ func Register(c *gin.Context) {
 	user := &model.User{Username: RegisterStruct.Username, Nickname: RegisterStruct.NickName, Password: RegisterStruct.Password, Avatar: RegisterStruct.HeaderImg}
 	err := service.Register(*user)
 	if err != nil {
-		response.FailWithMessage(fmt.Sprintf("注册失败%v", err), c)
+		response.FailWithMessage(fmt.Sprintf("注册失败，%v", err), c)
 	} else {
 		response.OkWithMessage("注册成功", c)
 	}
@@ -40,7 +40,7 @@ func Login(c *gin.Context) {
 	}
 	user := &model.User{Username: LoginStruct.Username, Password: LoginStruct.Password}
 	if err, userBack := service.Login(user); err != nil {
-		response.FailWithMessage(fmt.Sprintf("登录失败,%v", err), c)
+		response.FailWithMessage("用户名或密码错误", c)
 	} else {
 		response.OkWithDetailed(userBack, "登录成功", c)
 		//后续增加jwt
@@ -51,6 +51,11 @@ func Login(c *gin.Context) {
 func SetUserInfo(c *gin.Context) {
 	var user model.User
 	_ = c.ShouldBindJSON(&user)
+	msg, code := utils.Validate(&user)
+	if code == response.ERROR {
+		response.FailWithMessage(msg, c)
+		return
+	}
 	err, userBack := service.SetUserInfo(user)
 	if err != nil {
 		fmt.Println("更新失败", err)

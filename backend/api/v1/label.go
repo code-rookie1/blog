@@ -11,7 +11,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-//注册
+//添加标签
 func AddLabel(c *gin.Context) {
 	var labelStruct model.Label
 	_ = c.ShouldBindJSON(&labelStruct)
@@ -23,7 +23,7 @@ func AddLabel(c *gin.Context) {
 	label := &model.Label{Name: labelStruct.Name, Alias: labelStruct.Alias, Description: labelStruct.Description}
 	err := service.AddLabel(label)
 	if err != nil {
-		response.FailWithMessage(fmt.Sprintf("添加失败%v", err), c)
+		response.FailWithMessage(fmt.Sprintf("添加失败,%v", err), c)
 	} else {
 		response.OkWithMessage("添加成功", c)
 	}
@@ -41,7 +41,7 @@ func UpdateLabel(c *gin.Context) {
 	}
 }
 
-//获取用户列表
+//获取获取列表
 func GetLabelList(c *gin.Context) {
 	var pageInfo request.PageInfo
 	_ = c.ShouldBindJSON(&pageInfo)
@@ -63,7 +63,7 @@ func GetLabelList(c *gin.Context) {
 	}
 }
 
-// 通过id获取用户
+// 通过id获取标签
 func GetLabelById(c *gin.Context) {
 	var getById request.GetByID
 	_ = c.ShouldBindJSON(&getById)
@@ -83,7 +83,7 @@ func GetLabelById(c *gin.Context) {
 
 }
 
-// 删除用户
+// 删除标签
 func DeleteLabel(c *gin.Context) {
 
 }
